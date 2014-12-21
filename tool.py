@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Some helpful tools
 
@@ -143,7 +143,7 @@ def np_get_ref(net):
 def ff_grad_step(net, out, tar, grad=None):
     """
     Calc gradient with backpropogete method,
-    for feed-forward neuran networks on each step
+    for feed-forward neural networks on each step
 
     :Parametrs:
         net: Net
@@ -169,11 +169,11 @@ def ff_grad_step(net, out, tar, grad=None):
             grad.append({})
             for k, v in l.np.items():
                 grad[i][k] = np.zeros(v.shape)
-    e = out - tar
+    e = tar - out  # old: out - tar
     # for output layer
     ln = len(net.layers) - 1
     layer = net.layers[ln]
-    delt[ln] = net.errorf.deriv(e) * layer.transf.deriv(layer.s, out)
+    delt[ln] = net.errorf.deriv(tar,out) * layer.transf.deriv(layer.s, out)
     delt[ln].shape = delt[ln].size, 1
     grad[ln]['w'] += delt[ln] * layer.inp
     grad[ln]['b'] += delt[ln].reshape(delt[ln].size)
@@ -189,13 +189,14 @@ def ff_grad_step(net, out, tar, grad=None):
 
         grad[ln]['w'] += delt[ln] * layer.inp
         grad[ln]['b'] += delt[ln].reshape(delt[ln].size)
+
     return grad
 
 
 def ff_grad(net, input, target):
     """
     Calc and accumulate gradient with backpropogete method,
-    for feed-forward neuran networks on each step
+    for feed-forward neural networks on each step
 
     :Parametrs:
         net: Net
@@ -208,7 +209,7 @@ def ff_grad(net, input, target):
             Derivative of error function
     :Returns:
         grad: list of dict
-            Dradient of net for each layer,
+            Gradient of net for each layer,
             format:[{'w':..., 'b':...},{'w':..., 'b':...},...]
         grad_flat: array
             All neurons propertys in 1 array (reference of grad)
@@ -230,6 +231,12 @@ def ff_grad(net, input, target):
         out = net.step(inp)
         ff_grad_step(net, out, tar, grad)
         output.append(out)
+
+    # Add regularization term to gradient calculations
+    for i, l in enumerate(net.layers):
+        grad[i]['w'] += net.errorf.reg_param_w * l.np['w']
+        grad[i]['b'] += net.errorf.reg_param_b * l.np['b']
+
     return grad, grad_flat, np.row_stack(output)
 
 

@@ -68,6 +68,7 @@ class TrainBFGS(TrainSO):
 
         x = fmin_bfgs(self.fcn, self.x.copy(), fprime=self.grad, callback=self.step,
                       **self.kwargs)
+
         self.x[:] = x
 
 

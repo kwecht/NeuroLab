@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Train algorithm based on Winner Take All - rule
 
@@ -39,7 +39,7 @@ class TrainWTA(Train):
         winners = np.argmax(output, axis=1)
         e =  layer.np['w'][winners] - input
         
-        return net.errorf(e)
+        return net.errorf(layer.np['w'][winners],input,net.layers)
     
     def learn(self, net, input):
         layer = net.layers[0]
