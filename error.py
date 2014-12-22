@@ -344,7 +344,8 @@ class MAE:
 
 class CEE:
     """
-    Cross-entropy error function
+    Cross-entropy error function.
+    For use when targets in {0,1}
 
     :Parameters:
         target: ndarray
@@ -375,10 +376,10 @@ class CEE:
     def __init__(self,**kwargs):
         (self.reg_param_w,self.reg_param_b) = set_regparams(kwargs)
 
-    def __call__(self, target, predict, net):
+    def __call__(self, target, output, net):
         # Objective term in cost function
-        N = e.size
-        #v = cost function here
+        N = target.size
+        v = -1.*np.sum(target*np.log(output) + (1-target)*np.log(1-output)) / N
 
         # Regularization term
         (w,b) = param_norms(net)
@@ -389,6 +390,21 @@ class CEE:
         return v
 
     def deriv(self, target, output):
+        """
+        Derivative of CEE error function
+
+        :Parameters:
+            target: ndarray
+                target values
+            output: ndarray
+                network predictions
+
+        :Returns:
+            d: ndarray
+                Derivative: dE/d_out
         
-        # Make some calculations
-        return something
+        """
+
+        N = target.size
+        e = -1.*(target - output) / N
+        return e
