@@ -365,10 +365,10 @@ class CEE:
             Error value
     :Example:
         >>> f = CEE()
-        >>> tar = np.array([1,0,1])
-        >>> out = np.array([0,1,1])
+        >>> tar = np.array([1,1,0,0])
+        >>> out = np.array([0.99,0.01,0.2,0.01])
         >>> x = f(tar,out,net)
-        1.0
+        1.212
 
     """
 
@@ -379,7 +379,8 @@ class CEE:
     def __call__(self, target, output, net):
         # Objective term in cost function
         N = target.size
-        v = -1.*np.sum(target*np.log(output) + (1-target)*np.log(1-output)) / N
+        v = -1.*np.sum(target*np.nan_to_num(np.log(output)) + 
+                       (1-target)*np.nan_to_num(np.log(1-output))) / N
 
         # Regularization term
         (w,b) = param_norms(net)
