@@ -11,3 +11,5 @@ These changes have required some modification of the Neurolab source code. For e
 
 Incorporation into Neurolab library as of 21 December 2014:
 I have contacted the developers of Neurolab and hope that these modifications can be incorporated into the standard distribution of the Neurolab library.
+
+Please contact me on github for any questions or issues regarding these modifications.
